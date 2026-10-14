@@ -1,0 +1,357 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+class STRING
+{
+        char *s;
+        int l;
+        public:
+        STRING()
+        {
+                l=0;
+                s=new char[1];
+                s[0]='\0';
+        }
+        STRING(const char *s1)
+        {
+                l=strlen(s1);
+                s=new char[l+1];
+                strcpy(s,s1);
+        }
+        STRING(const STRING &s1)
+        {
+                l=s1.l;
+                s=new char[l+1];
+                strcpy(s,s1.s);
+        }
+        ~STRING()
+        {
+                if(s!=0)
+                        delete []s;
+                        s=0;
+        }
+        STRING operator =(STRING s2)
+        {
+                if(this==&s2)
+                        return *this;
+                delete []s;
+                l=s2.l;
+                s=new char[l+1];
+                strcpy(s,s2.s);
+                return *this;
+        }
+        STRING operator +(STRING s2)
+        {
+                STRING temp;
+                delete [] temp.s;
+                temp.l=l+s2.l;
+                temp.s=new char[temp.l+1];
+                strcpy(temp.s,s);
+                strcat(temp.s,s2.s);
+                return temp;
+        }
+        char& operator[](int i)
+        {
+                cout<<"operator[]"<<endl;
+                return s[i];
+        }
+        bool operator==(STRING s2)
+        {
+                return strcmp(s,s2.s)==0;
+        }
+        bool operator!=(STRING s2)
+        {
+                return strcmp(s,s2.s)!=0;
+        }
+
+        bool operator<(STRING s2)
+        {
+                return strcmp(s,s2.s)<0;
+        }
+        bool operator<=(STRING s2)
+        {
+                return strcmp(s,s2.s)<=0;
+
+        }
+        bool operator>(STRING s2)
+        {
+                return strcmp(s,s2.s)>0;
+        }
+        bool operator >=(STRING s2)
+        {
+                return strcmp(s,s2.s)>=0;
+
+        }
+        friend ostream& operator <<(ostream &,STRING &);
+        friend istream& operator >>(istream &,STRING &);
+        friend void str_cpy(STRING &s2,STRING &s1);
+        friend void strn_cpy(STRING &s2,STRING &s1,int n);
+        friend void str_rev(STRING &s1);
+        friend void str_upr(STRING &s1);
+        friend void str_lwr(STRING &s1);
+        friend void str_chr(STRING &s1,char ch);
+        friend void strr_chr(STRING &s1,char ch1);
+        friend void str_str(STRING &s1,char *s3);
+        friend void str_len(STRING &s1);
+        friend void str_cmp(STRING &s2,STRING &s1);
+        friend void strn_cmp(STRING &s2,STRING &s1,int n1);
+        friend void str_cat(STRING &s2,STRING &s1);
+        friend void strn_cat(STRING &s2,STRING &s1,int n2);
+
+};
+void strn_cat(STRING &s2,STRING &s1,int n2)
+{
+        int i,j,l2;
+        l2=strlen(s2.s);
+        for(i=0,j=l2;i<n2 && s1.s[i];i++,j++)
+                s2.s[j]=s1.s[i];
+
+         cout<<"strn_cat="<<s2.s<<endl;
+}
+
+void str_cat(STRING &s2,STRING &s1)
+{
+        int i,j,l2;
+        l2=strlen(s2.s);
+        for(i=0,j=l2;s1.s[i];i++,j++)
+                s2.s[j]=s1.s[i];
+
+        cout<<"str_cat:="<<s2.s<<endl;
+}
+
+void strn_cmp(STRING &s2,STRING &s1,int n1)
+{
+        int i;
+
+        for(i=0;i<n1 &&s1.s[i] &&s2.s[i];i++)
+        {
+                if(s1.s[i]!=s2.s[i])
+                        break;
+        }
+        if(s1.s[i]==s2.s[i])
+                cout<<"both strings are equal upto n1\n";
+        else
+          cout<<"both strings are not equal upto n1\n";
+}
+void str_cmp(STRING &s2,STRING &s1)
+{
+        int i;
+        for(i=0;s1.s[i]&&s2.s[i];i++)
+        {
+                if(s1.s[i]!=s2.s[i])
+                        break;
+        }
+         if(s1.s[i]==s2.s[i])
+                 cout<<"both strings are equal\n";
+        else
+                cout<<"both strings are not equal\n";
+}
+void str_len(STRING &s1)
+{
+        int len;
+        for(len=0;s1.s[len];len++);
+        cout<<"str_len="<<len<<endl;
+}
+void str_str(STRING &s1,char *s3)
+{
+        int i,j,flag=0;
+        for(i=0;s1.s[i];i++)
+        {
+                if(s1.s[i]==s3[0])
+                {
+                        for(j=0;s3[j];j++)
+                        {
+                                if(s1.s[i+j]!=s3[j]||s1.s[i+j]=='\0')
+                                        break;
+                        }
+                                        if(s3[j]=='\0')
+                                        {
+                                                flag=1;
+                                                break;
+                                        }
+
+                }
+        }
+        if(flag==1)
+                cout<<"given string was present\n";
+        else
+                cout<<"given string was not present:\n";
+}
+void strr_chr(STRING &s1,char ch1)
+{
+        int lt,i,flag=0;
+        for(i=0;s1.s[i];i++)
+        {
+                if(s1.s[i]==ch1)
+                {
+                        lt=i;
+                        flag=1;
+                }
+        }
+        if(flag==1)
+        {
+                cout<<"last char position:\n";
+                cout<<lt<<endl;
+        }
+        else
+                cout<<"char was not present:\n";
+
+}
+
+
+void str_chr(STRING &s1,char ch)
+{
+        int i;
+        for(i=0;s1.s[i];i++)
+        {
+                if(s1.s[i]==ch)
+                {
+                        cout<<"given char was present\n";
+                        return;
+                }
+        }
+        cout<<"given char was not present\n";
+}
+
+void str_lwr(STRING &s1)
+{
+        int i;
+        for(i=0;s1.s[i];i++)
+        {
+                if(s1.s[i]>='A'&&s1.s[i]<='Z')
+                        s1.s[i]=s1.s[i]+32;
+
+        }
+        cout<<"str_lwr:\n";
+        cout<<s1.s<<endl;
+}
+void str_upr(STRING &s1)
+{
+int i;
+for(i=0;s1.s[i];i++)
+{
+        if(s1.s[i]>='a'&&s1.s[i]<='z')
+           s1.s[i]=s1.s[i]-32;
+}
+cout<<"str_upr:\n";
+cout<<s1.s<<endl;
+}
+void str_rev(STRING &s1)
+{
+        int i,l;
+        for(l=0;s1.s[l];l++);
+        l--;
+        for(i=0,l;i<l;i++,l--)
+        {
+                char t=s1.s[i];
+                s1.s[i]=s1.s[l];
+                s1.s[l]=t;
+        }
+        cout<<"string reversed:\n";
+        cout<<s1.s<<endl;
+}
+void str_cpy(STRING &s2,STRING &s1)
+{
+        int i;
+        for(i=0;s1.s[i];i++)
+        {
+                s2.s[i]=s1.s[i];
+        }
+        s2.s[i]='\0';
+        cout<<"str_cpy:\n";
+        cout<<s2.s<<endl;
+}
+void strn_cpy(STRING &s2,STRING &s1,int n)
+{
+int i;
+for(i=0;s1.s[i];i++)
+{
+        if(i<n)
+                s2.s[i]=s1.s[i];
+        else
+                break;
+
+}
+s2.s[i]='\0';
+cout<<"strn_cpy:\n";
+cout<<s2.s<<endl;
+}
+
+
+
+  ostream& operator <<(ostream &out,STRING &s1)
+  {
+          out<<s1.s<<endl;
+          return out;
+  }
+  istream& operator >>(istream &in,STRING &s1)
+  {
+          char b[20];
+          cout<<"enter string:"<<endl;
+          in>>b;
+          delete [] s1.s;
+          s1.l=strlen(b);
+          s1.s=new char[s1.l+1];
+          strcpy(s1.s,b);
+          return in;
+  }
+
+        int main()
+        {
+                STRING s1("ve"),s2("hi"),s3,s4;
+                s3=s1+s2;
+                cout<<"s3=s1+s2=>"<<s3;
+
+                if(s1==s2)
+                        cout<<"s1==s2"<<endl;
+                if(s1!=s2)
+                        cout<<"s1!=s2"<<endl;
+                        if(s1<s2)
+                                cout<<"s1 < s2"<<endl;
+             str_cpy(s2,s1);
+
+             int n;
+             cout<<"enter n value for strncpy:\n";
+             cin>>n;
+             strn_cpy(s2,s1,n);
+
+             str_rev(s1);
+
+             str_upr(s1);
+
+             str_lwr(s1);
+
+
+             char ch;
+             cout<<"enter ch value for strchr:\n";
+             cin>>ch;
+             str_chr(s1,ch);
+
+             char ch1;
+             cout<<"enter ch1 value for strrchr:\n";
+             cin>>ch1;
+             strr_chr(s1,ch1);
+
+             char s5[10];
+             cout<<"enter s5 for strrchr:\n";
+             cin>>s5;
+             str_str(s1,s5);
+
+             str_len(s1);
+
+             //cout<<"enter s2 string for str_cmp:\n";
+             //cin>>s2;
+             str_cmp(s2,s1);
+
+             int n1;
+             cout<<"enter n1 value for strn_cmp:\n";
+             cin>>n1;
+             strn_cmp(s2,s1,n1);
+
+             str_cat(s2,s1);
+
+             int n2;
+             cout<<"enter n2 value for strn_cat:\n";
+             cin>>n2;
+             strn_cat(s2,s1,n2);
+}
